@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TerminalButton, TerminalInput, OnlineStatus, SystemStatus } from '../ui'
 import { cn } from '../../lib/utils'
 
@@ -32,15 +32,19 @@ export function DashboardHeader({
   loading = false
 }: DashboardHeaderProps) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
 
   // Update time every second
-  useState(() => {
+  useEffect(() => {
+    // Set initial time on client
+    setCurrentTime(new Date())
+    
     const interval = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
+    
     return () => clearInterval(interval)
-  })
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,6 +68,14 @@ export function DashboardHeader({
     })
   }
 
+  const formatTimeConsistent = (date: Date) => {
+    // Use consistent formatting to avoid hydration issues
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+    const seconds = date.getSeconds().toString().padStart(2, '0')
+    return `${hours}:${minutes}:${seconds}`
+  }
+
   return (
     <header className={cn('terminal-panel border-b-2 border-orange-400/30', className)}>
       {/* Top row - Title and System Status */}
@@ -83,10 +95,10 @@ export function DashboardHeader({
           
           <div className="text-right font-mono text-sm">
             <div className="text-orange-400 font-bold">
-              {formatTime(currentTime)}
+              {currentTime ? formatTimeConsistent(currentTime) : '--:--:--'}
             </div>
             <div className="text-orange-400/70">
-              {formatDate(currentTime)}
+              {currentTime ? formatDate(currentTime) : '--/--/----'}
             </div>
           </div>
         </div>
@@ -116,9 +128,9 @@ export function DashboardHeader({
             </form>
           )}
           
-          {lastUpdated && (
+          {lastUpdated && currentTime && (
             <div className="text-xs text-orange-400/60 font-mono">
-              Last updated: {lastUpdated.toLocaleTimeString()}
+              Last updated: {formatTimeConsistent(lastUpdated)}
             </div>
           )}
         </div>
