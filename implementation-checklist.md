@@ -86,14 +86,14 @@
 ### 📈 Phase 4: D3.js Chart Components
 
 #### Core Chart Components
-- [ ] `TimeSeriesChart` - Corruption trends over time
-  - [ ] Line chart with terminal styling
-  - [ ] Zoom and pan functionality
-  - [ ] Real-time data updates
-- [ ] `ChoroplethMap` - Indonesia regional heat map
-  - [ ] GeoJSON integration for Indonesia provinces
-  - [ ] Interactive hover and click events
-  - [ ] Color scaling based on corruption intensity
+- [x] `TimeSeriesChart` - Corruption trends over time
+  - [x] Line chart with terminal styling
+  - [x] Zoom and pan functionality
+  - [x] Real-time data updates
+- [x] `ChoroplethMap` - Indonesia regional heat map
+  - [x] GeoJSON integration for Indonesia provinces
+  - [x] Interactive hover and click events
+  - [x] Color scaling based on corruption intensity
 - [ ] `BarChart` - Sector analysis horizontal bars
   - [ ] Animated bar transitions
   - [ ] Terminal color scheme
