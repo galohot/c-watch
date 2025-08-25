@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase, type CorruptionCase } from '../lib/supabase'
-import { RealtimeChannel } from '@supabase/supabase-js'
+import { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 
 export interface UseRealtimeUpdatesResult {
   isConnected: boolean
@@ -16,19 +16,19 @@ export function useRealtimeUpdates(): UseRealtimeUpdatesResult {
   const [error, setError] = useState<string | null>(null)
   const [lastUpdate, setLastUpdate] = useState<CorruptionCase | null>(null)
   const [updateCount, setUpdateCount] = useState(0)
-  const [channel, setChannel] = useState<RealtimeChannel | null>(null)
+  const [, setChannel] = useState<RealtimeChannel | null>(null)
 
-  const handleInsert = useCallback((payload: any) => {
+  const handleInsert = useCallback((payload: RealtimePostgresChangesPayload<CorruptionCase>) => {
     setLastUpdate(payload.new as CorruptionCase)
     setUpdateCount(prev => prev + 1)
   }, [])
 
-  const handleUpdate = useCallback((payload: any) => {
+  const handleUpdate = useCallback((payload: RealtimePostgresChangesPayload<CorruptionCase>) => {
     setLastUpdate(payload.new as CorruptionCase)
     setUpdateCount(prev => prev + 1)
   }, [])
 
-  const handleDelete = useCallback((payload: any) => {
+  const handleDelete = useCallback((payload: RealtimePostgresChangesPayload<CorruptionCase>) => {
     setLastUpdate(payload.old as CorruptionCase)
     setUpdateCount(prev => prev + 1)
   }, [])

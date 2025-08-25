@@ -151,10 +151,11 @@ export function CorruptionChart({
       
       if (interactive) {
         g.selectAll('.dot')
-          .on('mouseover', function(event: Event, d: ProcessedChartData) {
+          .on('mouseover', function(event: MouseEvent, d: unknown) {
+            const data = d as ProcessedChartData
             d3.select(this).attr('r', 6)
             const [x, y] = d3.pointer(event, svg.node())
-            setTooltip({ x, y, data: d })
+            setTooltip({ x, y, data })
           })
           .on('mouseout', function() {
             d3.select(this).attr('r', 4)
@@ -181,10 +182,11 @@ export function CorruptionChart({
       
       if (interactive) {
         g.selectAll('.bar')
-          .on('mouseover', function(event: Event, d: ProcessedChartData) {
+          .on('mouseover', function(event: MouseEvent, d: unknown) {
+            const data = d as ProcessedChartData
             d3.select(this).attr('fill-opacity', 0.8)
             const [x, y] = d3.pointer(event, svg.node())
-            setTooltip({ x, y, data: d })
+            setTooltip({ x, y, data })
           })
           .on('mouseout', function() {
             d3.select(this).attr('fill-opacity', 1)
@@ -209,10 +211,11 @@ export function CorruptionChart({
       
       if (interactive) {
          g.selectAll('.dot')
-           .on('mouseover', function(event: Event, d: ProcessedChartData) {
+           .on('mouseover', function(event: MouseEvent, d: unknown) {
+             const data = d as ProcessedChartData
              d3.select(this).attr('r', 8).attr('fill-opacity', 1)
              const [x, y] = d3.pointer(event, svg.node())
-             setTooltip({ x, y, data: d })
+             setTooltip({ x, y, data })
            })
            .on('mouseout', function() {
              d3.select(this).attr('r', 6).attr('fill-opacity', 0.7)
@@ -224,7 +227,7 @@ export function CorruptionChart({
     // Axes
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%m/%d')))
+      .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%m/%d') as (domainValue: Date | d3.NumberValue, index: number) => string))
       .style('color', '#f97316')
 
     g.append('g')
@@ -293,7 +296,7 @@ export function CorruptionChart({
             transform: 'translate(-50%, -100%)'
           }}
         >
-          <div>Date: {tooltip.data.date}</div>
+          <div>Date: {tooltip.data.date.toLocaleDateString()}</div>
           <div>Value: {tooltip.data.value}</div>
           {tooltip.data.severity && (
             <div>Severity: {tooltip.data.severity.toUpperCase()}</div>
