@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase, type CorruptionCase } from '../lib/supabase'
+import { createClient, type CorruptionCase } from '../lib/supabase'
 
 export interface UseCorruptionCasesResult {
   cases: CorruptionCase[]
@@ -20,6 +20,7 @@ export function useCorruptionCases(): UseCorruptionCasesResult {
       setLoading(true)
       setError(null)
       
+      const supabase = createClient()
       const { data, error: supabaseError } = await supabase
         .from('corruption_cases')
         .select('*')

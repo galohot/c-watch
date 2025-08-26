@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase, type CorruptionCase } from '../lib/supabase'
+import { createClient, type CorruptionCase } from '../lib/supabase'
 import { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 
 export interface UseRealtimeUpdatesResult {
@@ -34,6 +34,7 @@ export function useRealtimeUpdates(): UseRealtimeUpdatesResult {
   }, [])
 
   useEffect(() => {
+    const supabase = createClient()
     const realtimeChannel = supabase
       .channel('corruption_cases_changes')
       .on(

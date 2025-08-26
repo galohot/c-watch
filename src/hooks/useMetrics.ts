@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { createClient } from '../lib/supabase'
 
 export interface DashboardMetrics {
   totalCases: number
@@ -40,6 +40,8 @@ export function useMetrics(): UseMetricsResult {
       setLoading(true)
       setError(null)
 
+      const supabase = createClient()
+      
       // Get all cases for comprehensive analysis
       const { data: cases, error: supabaseError } = await supabase
         .from('corruption_cases')

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { createClient } from '../lib/supabase'
 
 export interface RegionalStat {
   region: string
@@ -29,6 +29,7 @@ export function useRegionalStats(): UseRegionalStatsResult {
       setLoading(true)
       setError(null)
 
+      const supabase = createClient()
       // Get all cases with regional data
       const { data: cases, error: supabaseError } = await supabase
         .from('corruption_cases')

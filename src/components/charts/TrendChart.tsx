@@ -18,6 +18,7 @@ interface TrendChartProps {
   height?: number
   className?: string
   loading?: boolean
+  error?: string
   title?: string
   showTrendLine?: boolean
   showPercentages?: boolean
@@ -30,10 +31,11 @@ export function TrendChart({
   height = 300,
   className,
   loading = false,
+  error,
   title,
   showTrendLine = true,
   showPercentages = true,
-  timeframe = 'monthly'
+
 }: TrendChartProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const [hoveredData, setHoveredData] = useState<TrendData | null>(null)
@@ -92,7 +94,7 @@ export function TrendChart({
       .style('stroke', '#f97316')
 
     // Bars
-    const bars = g.selectAll('.bar')
+    g.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'bar')
@@ -246,6 +248,34 @@ export function TrendChart({
     return (
       <div className={cn('flex items-center justify-center', className)} style={{ width, height }}>
         <LoadingSpinner text="Loading trend data..." />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className={cn('flex flex-col items-center justify-center space-y-4', className)} style={{ width, height }}>
+        <div className="text-red-400 text-center">
+          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <p className="font-mono text-sm">Trend Error</p>
+          <p className="font-mono text-xs text-red-400/70">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className={cn('flex flex-col items-center justify-center space-y-4', className)} style={{ width, height }}>
+        <div className="text-orange-400/50 text-center">
+          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          <p className="font-mono text-sm">No Trend Data</p>
+          <p className="font-mono text-xs">No trend data available to display</p>
+        </div>
       </div>
     )
   }
