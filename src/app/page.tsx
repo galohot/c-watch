@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { DashboardHeader, MetricsOverview, CriticalMetrics } from '../components/dashboard'
 import { TerminalPanel, TickerTape, DataTable, LoadingSpinner } from '../components/ui'
-import { CorruptionChart, ChoroplethMap } from '../components/charts'
+import { CorruptionChart, ChoroplethMap, BarChart, NetworkGraph, Treemap } from '../components/charts'
 import { useCorruptionCases } from '../hooks/useCorruptionCases'
 import { useMetrics } from '../hooks/useMetrics'
 import { useRealtimeUpdates } from '../hooks/useRealtimeUpdates'
@@ -232,7 +232,7 @@ export default function Home() {
 
           {/* Resizable Dashboard Panels */}
           {!casesLoading && !metricsLoading && !regionalLoading && (
-            <PanelGroup direction="vertical" className="min-h-[800px]">
+            <PanelGroup direction="vertical" className="min-h-[1000px]">
               {/* Top Row - Charts */}
               <Panel defaultSize={50} minSize={30}>
                 <PanelGroup direction="horizontal">
@@ -343,8 +343,49 @@ export default function Home() {
               
               <PanelResizeHandle className="panel-resize-handle" />
               
-              {/* Bottom Row - Critical Alerts and Table */}
+              {/* Bottom Row - Sector Analysis and Network/Treemap */}
               <Panel defaultSize={50} minSize={30}>
+                <PanelGroup direction="horizontal">
+                  <Panel defaultSize={33} minSize={25}>
+                    <TerminalPanel title="SECTOR ANALYSIS" className="h-full">
+                      <BarChart
+                        width={400}
+                        height={300}
+                        className="w-full h-full"
+                      />
+                    </TerminalPanel>
+                  </Panel>
+                  
+                  <PanelResizeHandle className="panel-resize-handle" />
+                  
+                  <Panel defaultSize={33} minSize={25}>
+                    <TerminalPanel title="INSTITUTION NETWORK" className="h-full">
+                      <NetworkGraph
+                        width={400}
+                        height={300}
+                        className="w-full h-full"
+                      />
+                    </TerminalPanel>
+                  </Panel>
+                  
+                  <PanelResizeHandle className="panel-resize-handle" />
+                  
+                  <Panel defaultSize={34} minSize={25}>
+                    <TerminalPanel title="HIERARCHICAL ANALYSIS" className="h-full">
+                      <Treemap
+                        width={400}
+                        height={300}
+                        className="w-full h-full"
+                      />
+                    </TerminalPanel>
+                  </Panel>
+                </PanelGroup>
+              </Panel>
+              
+              <PanelResizeHandle className="panel-resize-handle" />
+              
+              {/* Third Row - Critical Alerts and Live Case Feed */}
+              <Panel defaultSize={40} minSize={25}>
                 <PanelGroup direction="horizontal">
                   <Panel defaultSize={40} minSize={25}>
                     <div className="h-full">

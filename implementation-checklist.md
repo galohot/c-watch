@@ -117,29 +117,42 @@
 - [x] Panel resize functionality (optional for MVP)
 
 #### Dashboard Panels
-- [x] **Panel A: Real-Time Metrics**
-  - [x] Total cases counter with animation
-  - [x] Total losses in IDR
-  - [x] Asset recovery percentage
-  - [x] Cases by status breakdown
-- [x] **Panel B: Geographic Visualization**
+- [x] **Panel A: Real-Time Metrics (CorruptionChart)**
+  - [x] Daily case trends visualization
+  - [x] Area chart with severity color coding
+  - [x] Real-time data updates
+  - [x] Interactive hover tooltips
+- [x] **Panel B: Geographic Visualization (ChoroplethMap)**
   - [x] Indonesia choropleth map
   - [x] Regional statistics overlay
   - [x] Province selection functionality
-- [x] **Panel C: Sector Analysis**
+  - [x] Interactive multi-select capability
+- [x] **Panel C: Sector Analysis (BarChart)**
   - [x] Horizontal bar chart by sector
-  - [x] Severity score distribution
-  - [x] Government level breakdown
-- [x] **Panel D: Live Case Feed**
+  - [x] Multiple metrics (case count, losses, severity)
+  - [x] Animated bar transitions
+  - [x] Metric switching functionality
+- [x] **Panel D: Institution Network (NetworkGraph)**
+  - [x] Force-directed network visualization
+  - [x] Institution-case relationships
+  - [x] Interactive drag and zoom
+  - [x] Node clustering by importance
+- [x] **Panel E: Hierarchical Analysis (Treemap)**
+  - [x] Sector/region hierarchical visualization
+  - [x] Multiple view modes (sector, region, combined)
+  - [x] Interactive zoom and drill-down
+  - [x] Color coding by severity
+- [x] **Panel F: Live Case Feed (DataTable)**
   - [x] Scrollable case list
   - [x] Real-time updates
   - [x] Case detail expansion
+  - [x] Critical metrics sidebar
 
 #### Header Components
-- [x] `LiveTicker` - Scrolling case updates
-- [x] `MetricsBar` - Key statistics display
-- [ ] `SearchBar` - Case search and filtering
-- [ ] `Clock` - Terminal-style timestamp
+- [x] `LiveTicker` - Scrolling case updates (TickerTape component)
+- [x] `MetricsBar` - Key statistics display (MetricsOverview component)
+- [ ] `SearchBar` - Case search and filtering (NOT IMPLEMENTED)
+- [ ] `Clock` - Terminal-style timestamp (NOT IMPLEMENTED)
 
 ### ⚡ Phase 6: Real-time Features & Performance ✅
 

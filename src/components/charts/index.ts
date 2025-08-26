@@ -2,6 +2,9 @@
 export { CorruptionChart } from './CorruptionChart'
 export { TrendChart } from './TrendChart'
 export { ChoroplethMap } from './ChoroplethMap'
+export { default as BarChart } from './BarChart'
+export { default as NetworkGraph } from './NetworkGraph'
+export { default as Treemap } from './Treemap'
 
 // Type exports for charts
 export interface ChartData {
