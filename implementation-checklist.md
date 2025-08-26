@@ -105,9 +105,9 @@
   - [x] Interactive zoom functionality
 
 #### Chart Utilities
-- [ ] `src/lib/chartUtils.ts` - Common D3 utilities
-- [ ] `src/lib/colorScales.ts` - Bloomberg color schemes using CSS variables
-- [ ] `src/lib/animations.ts` - Chart transition functions
+- [x] `src/lib/chartUtils.ts` - Common D3 utilities
+- [x] `src/lib/colorScales.ts` - Bloomberg color schemes using CSS variables
+- [x] `src/lib/animations.ts` - Chart transition functions
 
 ### 🖥️ Phase 5: Dashboard Layout Implementation
 
