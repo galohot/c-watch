@@ -94,15 +94,15 @@
   - [x] GeoJSON integration for Indonesia provinces
   - [x] Interactive hover and click events
   - [x] Color scaling based on corruption intensity
-- [ ] `BarChart` - Sector analysis horizontal bars
-  - [ ] Animated bar transitions
-  - [ ] Terminal color scheme
-- [ ] `NetworkGraph` - Institution relationship visualization
-  - [ ] Force-directed layout
-  - [ ] Node and link styling
-- [ ] `Treemap` - Hierarchical data visualization
-  - [ ] Losses by sector/region
-  - [ ] Interactive zoom functionality
+- [x] `BarChart` - Sector analysis horizontal bars
+  - [x] Animated bar transitions
+  - [x] Terminal color scheme
+- [x] `NetworkGraph` - Institution relationship visualization
+  - [x] Force-directed layout
+  - [x] Node and link styling
+- [x] `Treemap` - Hierarchical data visualization
+  - [x] Losses by sector/region
+  - [x] Interactive zoom functionality
 
 #### Chart Utilities
 - [ ] `src/lib/chartUtils.ts` - Common D3 utilities
