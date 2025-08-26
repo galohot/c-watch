@@ -1,0 +1,82 @@
+/* Panel Resize Handle Styles */
+.panel-resize-handle {
+  position: relative;
+  background: rgba(251, 146, 60, 0.2);
+  transition: all 0.2s ease;
+}
+
+.panel-resize-handle:hover {
+  background: rgba(251, 146, 60, 0.4);
+}
+
+.panel-resize-handle:active {
+  background: rgba(251, 146, 60, 0.6);
+}
+
+/* Horizontal resize handle */
+.panel-resize-handle[data-resize-handle-state="hover"][data-panel-group-direction="horizontal"] {
+  cursor: col-resize;
+}
+
+.panel-resize-handle[data-panel-group-direction="horizontal"] {
+  width: 8px;
+  cursor: col-resize;
+}
+
+.panel-resize-handle[data-panel-group-direction="horizontal"]:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 20px;
+  background: rgba(251, 146, 60, 0.6);
+  border-radius: 1px;
+}
+
+/* Vertical resize handle */
+.panel-resize-handle[data-resize-handle-state="hover"][data-panel-group-direction="vertical"] {
+  cursor: row-resize;
+}
+
+.panel-resize-handle[data-panel-group-direction="vertical"] {
+  height: 8px;
+  cursor: row-resize;
+}
+
+.panel-resize-handle[data-panel-group-direction="vertical"]:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 2px;
+  background: rgba(251, 146, 60, 0.6);
+  border-radius: 1px;
+}
+
+/* Active state indicators */
+.panel-resize-handle[data-resize-handle-active] {
+  background: rgba(251, 146, 60, 0.8);
+}
+
+.panel-resize-handle[data-resize-handle-active]:before {
+  background: rgba(251, 146, 60, 1);
+  box-shadow: 0 0 4px rgba(251, 146, 60, 0.5);
+}
+
+/* Panel group styling */
+.panel-group {
+  height: 100%;
+}
+
+/* Ensure panels fill their containers */
+.resizable-panel {
+  overflow: hidden;
+}
+
+.resizable-panel > * {
+  height: 100%;
+}

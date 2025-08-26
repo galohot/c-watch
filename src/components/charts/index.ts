@@ -1,6 +1,7 @@
 // Chart Components Export
 export { CorruptionChart } from './CorruptionChart'
 export { TrendChart } from './TrendChart'
+export { ChoroplethMap } from './ChoroplethMap'
 
 // Type exports for charts
 export interface ChartData {

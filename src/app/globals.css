@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
+/* Panel resize styles */
+@import '../styles/panels.css';
+
 :root {
   /* Bloomberg Terminal Color Palette */
   --terminal-bg: #000000;

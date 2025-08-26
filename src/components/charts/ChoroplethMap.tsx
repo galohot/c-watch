@@ -49,6 +49,9 @@ interface ChoroplethMapProps {
   showTooltip?: boolean
   onProvinceClick?: (province: ProvinceData) => void
   onProvinceHover?: (province: ProvinceData | null) => void
+  onProvinceSelect?: (selectedProvinces: ProvinceData[]) => void
+  selectedProvinces?: string[]
+  multiSelect?: boolean
   valueFormat?: (value: number) => string
 }
 
@@ -75,11 +78,15 @@ export function ChoroplethMap({
   showTooltip = true,
   onProvinceClick,
   onProvinceHover,
+  onProvinceSelect,
+  selectedProvinces = [],
+  multiSelect = false,
   valueFormat = (value: number) => value.toFixed(2)
 }: ChoroplethMapProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const [tooltip, setTooltip] = useState<{ x: number; y: number; data: ProvinceData } | null>(null)
   const [, setHoveredProvince] = useState<string | null>(null)
+  const [internalSelectedProvinces, setInternalSelectedProvinces] = useState<string[]>(selectedProvinces)
 
   useEffect(() => {
     if (!data.length || loading) return
@@ -125,10 +132,20 @@ export function ChoroplethMap({
         .attr('fill', d => {
           const provinceData = dataMap.get(d.properties.ID_1)
           if (!provinceData) return '#2a2a2a'
+          const isSelected = internalSelectedProvinces.includes(d.properties.ID_1)
+          if (isSelected) {
+            return '#fbbf24' // Selected provinces get amber color
+          }
           return colorScale(provinceData.corruptionIntensity)
         })
-        .attr('stroke', '#f97316')
-        .attr('stroke-width', 1)
+        .attr('stroke', d => {
+          const isSelected = internalSelectedProvinces.includes(d.properties.ID_1)
+          return isSelected ? '#fbbf24' : '#f97316'
+        })
+        .attr('stroke-width', d => {
+          const isSelected = internalSelectedProvinces.includes(d.properties.ID_1)
+          return isSelected ? 3 : 1
+        })
         .style('cursor', interactive ? 'pointer' : 'default')
         .on('mouseover', function(event, d) {
           if (!interactive) return
@@ -171,6 +188,31 @@ export function ChoroplethMap({
           const provinceData = dataMap.get(d.properties.ID_1)
           if (!provinceData) return
 
+          // Handle selection
+          const provinceId = d.properties.ID_1
+          let newSelection: string[]
+          
+          if (multiSelect) {
+            if (internalSelectedProvinces.includes(provinceId)) {
+              newSelection = internalSelectedProvinces.filter(id => id !== provinceId)
+            } else {
+              newSelection = [...internalSelectedProvinces, provinceId]
+            }
+          } else {
+            newSelection = internalSelectedProvinces.includes(provinceId) ? [] : [provinceId]
+          }
+          
+          setInternalSelectedProvinces(newSelection)
+          
+          // Call selection callback with province data
+          if (onProvinceSelect) {
+            const selectedProvincesData = newSelection
+              .map(id => dataMap.get(id))
+              .filter(Boolean) as ProvinceData[]
+            onProvinceSelect(selectedProvincesData)
+          }
+
+          // Still call the original click handler
           if (onProvinceClick) {
             onProvinceClick(provinceData)
           }
@@ -190,9 +232,21 @@ export function ChoroplethMap({
         .attr('y', (d, i) => Math.floor(i / gridCols) * cellHeight)
         .attr('width', cellWidth - 2)
         .attr('height', cellHeight - 2)
-        .attr('fill', d => colorScale(d.corruptionIntensity))
-        .attr('stroke', '#f97316')
-        .attr('stroke-width', 1)
+        .attr('fill', d => {
+          const isSelected = internalSelectedProvinces.includes(d.provinceId)
+          if (isSelected) {
+            return '#fbbf24' // Selected provinces get amber color
+          }
+          return colorScale(d.corruptionIntensity)
+        })
+        .attr('stroke', d => {
+          const isSelected = internalSelectedProvinces.includes(d.provinceId)
+          return isSelected ? '#fbbf24' : '#f97316'
+        })
+        .attr('stroke-width', d => {
+          const isSelected = internalSelectedProvinces.includes(d.provinceId)
+          return isSelected ? 3 : 1
+        })
         .style('cursor', interactive ? 'pointer' : 'default')
         .on('mouseover', function(event, d) {
           if (!interactive) return
@@ -229,6 +283,31 @@ export function ChoroplethMap({
         .on('click', function(event, d) {
           if (!interactive) return
 
+          // Handle selection
+          const provinceId = d.provinceId
+          let newSelection: string[]
+          
+          if (multiSelect) {
+            if (internalSelectedProvinces.includes(provinceId)) {
+              newSelection = internalSelectedProvinces.filter(id => id !== provinceId)
+            } else {
+              newSelection = [...internalSelectedProvinces, provinceId]
+            }
+          } else {
+            newSelection = internalSelectedProvinces.includes(provinceId) ? [] : [provinceId]
+          }
+          
+          setInternalSelectedProvinces(newSelection)
+          
+          // Call selection callback with province data
+          if (onProvinceSelect) {
+            const selectedProvincesData = newSelection
+              .map(id => data.find(province => province.provinceId === id))
+              .filter(Boolean) as ProvinceData[]
+            onProvinceSelect(selectedProvincesData)
+          }
+
+          // Still call the original click handler
           if (onProvinceClick) {
             onProvinceClick(d)
           }
@@ -326,7 +405,12 @@ export function ChoroplethMap({
         .text(title)
     }
 
-  }, [data, geoData, loading, width, height, colorScheme, interactive, showLegend, valueFormat, onProvinceClick, onProvinceHover, showTooltip, title])
+  }, [data, geoData, loading, width, height, colorScheme, interactive, showLegend, valueFormat, onProvinceClick, onProvinceHover, showTooltip, title, internalSelectedProvinces, multiSelect, onProvinceSelect])
+
+  // Sync external selectedProvinces prop with internal state
+  useEffect(() => {
+    setInternalSelectedProvinces(selectedProvinces)
+  }, [selectedProvinces])
 
   if (loading) {
     return (
@@ -376,7 +460,12 @@ export function ChoroplethMap({
       
       {interactive && (
         <div className="absolute bottom-2 left-2 text-xs text-orange-500 font-mono">
-          Click provinces for details • Hover for info
+          Click to select provinces {multiSelect ? '(multi-select enabled)' : ''} • Hover for info
+          {internalSelectedProvinces.length > 0 && (
+            <div className="mt-1">
+              Selected: {internalSelectedProvinces.length} province{internalSelectedProvinces.length !== 1 ? 's' : ''}
+            </div>
+          )}
         </div>
       )}
     </div>
