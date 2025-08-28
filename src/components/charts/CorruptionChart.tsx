@@ -275,21 +275,28 @@ export function CorruptionChart({
 
   if (loading) {
     return (
-      <div className={cn('flex items-center justify-center', className)} style={{ width, height }}>
-        <LoadingSpinner size="lg" text="Loading chart data..." />
+      <div className={cn('relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 border border-cyan-500/30 backdrop-blur-sm', className)} style={{ width, height }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 animate-pulse" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1),transparent_50%)]" />
+        <div className="relative flex items-center justify-center h-full">
+          <LoadingSpinner size="lg" text="Loading chart data..." />
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className={cn('flex flex-col items-center justify-center space-y-4', className)} style={{ width, height }}>
-        <div className="text-red-400 text-center">
-          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-          <p className="font-mono text-sm">Chart Error</p>
-          <p className="font-mono text-xs text-red-400/70">{error}</p>
+      <div className={cn('relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900/90 via-red-900/20 to-slate-900/90 border border-red-500/30 backdrop-blur-sm', className)} style={{ width, height }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-orange-500/5 to-red-500/5 animate-pulse" />
+        <div className="relative flex flex-col items-center justify-center space-y-4 h-full">
+          <div className="text-red-400 text-center">
+            <svg className="w-12 h-12 mx-auto mb-2 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <p className="font-['JetBrains_Mono'] text-sm font-semibold tracking-wide">Chart Error</p>
+            <p className="font-['JetBrains_Mono'] text-xs text-red-400/70 mt-1">{error}</p>
+          </div>
         </div>
       </div>
     )
@@ -297,43 +304,75 @@ export function CorruptionChart({
 
   if (!data || data.length === 0) {
     return (
-      <div className={cn('flex flex-col items-center justify-center space-y-4', className)} style={{ width, height }}>
-        <div className="text-orange-400/50 text-center">
-          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <p className="font-mono text-sm">No Chart Data</p>
-          <p className="font-mono text-xs">No corruption data available to display</p>
+      <div className={cn('relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 border border-cyan-500/20 backdrop-blur-sm', className)} style={{ width, height }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5" />
+        <div className="relative flex flex-col items-center justify-center space-y-4 h-full">
+          <div className="text-cyan-400/60 text-center">
+            <svg className="w-12 h-12 mx-auto mb-2 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <p className="font-['JetBrains_Mono'] text-sm font-semibold tracking-wide">No Chart Data</p>
+            <p className="font-['JetBrains_Mono'] text-xs mt-1">No corruption data available to display</p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={cn('relative', className)}>
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        className="bg-black border border-orange-400/20"
-      />
+    <div className={cn('relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 border border-cyan-500/30 backdrop-blur-sm shadow-2xl', className)}>
+      {/* Animated background effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 animate-pulse" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(6,182,212,0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.1),transparent_50%)]" />
+      
+      {/* Shimmer effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 animate-[shimmer_3s_ease-in-out_infinite]" />
+      
+      {/* Chart container */}
+      <div className="relative p-4">
+        {title && (
+          <div className="mb-4">
+            <h3 className="font-['JetBrains_Mono'] text-lg font-bold text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text tracking-wide">
+              {title}
+            </h3>
+          </div>
+        )}
+        
+        <svg
+          ref={svgRef}
+          width={width}
+          height={height}
+          className="drop-shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(15, 23, 42, 0.8) 100%)',
+            borderRadius: '8px',
+            border: '1px solid rgba(6, 182, 212, 0.2)'
+          }}
+        />
+      </div>
+      
       {tooltip && (
         <div
-          className="absolute z-10 bg-black border border-orange-400 p-2 text-xs font-mono text-orange-400 pointer-events-none"
+          className="absolute z-50 bg-gradient-to-br from-slate-800/95 to-slate-900/95 border border-cyan-400/50 rounded-lg p-3 text-xs font-['JetBrains_Mono'] text-cyan-100 pointer-events-none shadow-2xl backdrop-blur-sm"
           style={{
             left: tooltip.x + 10,
             top: tooltip.y - 10,
             transform: 'translate(-50%, -100%)'
           }}
         >
-          <div>Date: {tooltip.data.date.toLocaleDateString()}</div>
-          <div>Value: {tooltip.data.value}</div>
-          {tooltip.data.severity && (
-            <div>Severity: {tooltip.data.severity.toUpperCase()}</div>
-          )}
-          {tooltip.data.category && (
-            <div>Category: {tooltip.data.category}</div>
-          )}
+          <div className="space-y-1">
+            <div className="text-cyan-300 font-semibold">Date: {tooltip.data.date.toLocaleDateString()}</div>
+            <div className="text-blue-300">Value: <span className="font-bold">{tooltip.data.value}</span></div>
+            {tooltip.data.severity && (
+              <div className="text-purple-300">Severity: <span className="font-bold uppercase">{tooltip.data.severity}</span></div>
+            )}
+            {tooltip.data.category && (
+              <div className="text-green-300">Category: <span className="font-bold">{tooltip.data.category}</span></div>
+            )}
+          </div>
+          {/* Tooltip arrow */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/50" />
         </div>
       )}
     </div>

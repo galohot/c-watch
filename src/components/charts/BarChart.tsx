@@ -1,247 +1,201 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import * as d3 from 'd3'
-import { useSectorStats, SectorStat } from '@/hooks/useSectorStats'
+import React from 'react'
+import { Bar } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+)
+
+interface BarChartData {
+  label: string
+  value: number
+  color?: string
+}
 
 interface BarChartProps {
+  data: BarChartData[]
+  title?: string
   width?: number
   height?: number
   className?: string
+  loading?: boolean
+  error?: string
 }
 
-interface SectorData {
-  sector: string
-  count: number
-  totalLosses: number
-  averageSeverity: number
-}
-
-export default function BarChart({ 
-  width = 800, 
-  height = 400, 
-  className = '' 
-}: BarChartProps) {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [selectedMetric, setSelectedMetric] = useState<'count' | 'totalLosses' | 'averageSeverity'>('count')
-  const { stats: sectorStats, loading, error } = useSectorStats()
-
-  useEffect(() => {
-    if (!sectorStats || loading || !svgRef.current) return
-
-    const svg = d3.select(svgRef.current)
-    svg.selectAll('*').remove()
-
-    const margin = { top: 20, right: 80, bottom: 60, left: 120 }
-    const innerWidth = width - margin.left - margin.right
-    const innerHeight = height - margin.top - margin.bottom
-
-    // Process data
-    const processedData: SectorData[] = sectorStats.map((stat: SectorStat) => ({
-      sector: stat.sector || 'Unknown',
-      count: stat.caseCount,
-      totalLosses: stat.totalLossesIdr || 0,
-      averageSeverity: stat.averageSeverityScore || 0
-    }))
-
-    // Sort data by selected metric
-    processedData.sort((a, b) => b[selectedMetric] - a[selectedMetric])
-
-    // Create scales
-    const xScale = d3.scaleLinear()
-      .domain([0, d3.max(processedData, d => d[selectedMetric]) || 0])
-      .range([0, innerWidth])
-
-    const yScale = d3.scaleBand()
-      .domain(processedData.map(d => d.sector))
-      .range([0, innerHeight])
-      .padding(0.2)
-
-    // Create color scale
-    const colorScale = d3.scaleSequential()
-      .domain([0, d3.max(processedData, d => d[selectedMetric]) || 0])
-      .interpolator(d3.interpolateRgb('#00ff00', '#ffaa00'))
-
-    // Create main group
-    const g = svg.append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`)
-
-    // Add background
-    g.append('rect')
-      .attr('width', innerWidth)
-      .attr('height', innerHeight)
-      .attr('fill', 'var(--terminal-bg-secondary)')
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('stroke-width', 1)
-      .attr('opacity', 0.1)
-
-    // Create bars
-    const bars = g.selectAll('.bar')
-      .data(processedData)
-      .enter()
-      .append('g')
-      .attr('class', 'bar')
-
-    // Add bar rectangles
-    bars.append('rect')
-      .attr('x', 0)
-      .attr('y', d => yScale(d.sector) || 0)
-      .attr('width', 0) // Start with 0 width for animation
-      .attr('height', yScale.bandwidth())
-      .attr('fill', d => colorScale(d[selectedMetric]))
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('stroke-width', 1)
-      .attr('opacity', 0.8)
-      .transition()
-      .duration(1000)
-      .delay((_, i) => i * 100)
-      .attr('width', d => xScale(d[selectedMetric]))
-
-    // Add value labels
-    bars.append('text')
-      .attr('x', d => xScale(d[selectedMetric]) + 5)
-      .attr('y', d => (yScale(d.sector) || 0) + yScale.bandwidth() / 2)
-      .attr('dy', '0.35em')
-      .attr('fill', 'var(--terminal-green)')
-      .attr('font-family', 'JetBrains Mono, monospace')
-      .attr('font-size', '12px')
-      .attr('opacity', 0)
-      .text(d => {
-        if (selectedMetric === 'totalLosses') {
-          return `Rp ${(d[selectedMetric] / 1e9).toFixed(1)}B`
-        } else if (selectedMetric === 'averageSeverity') {
-          return d[selectedMetric].toFixed(1)
-        } else {
-          return d[selectedMetric].toString()
-        }
-      })
-      .transition()
-      .duration(1000)
-      .delay((_, i) => i * 100 + 500)
-      .attr('opacity', 1)
-
-    // Add y-axis (sector labels)
-    const yAxis = d3.axisLeft(yScale)
-      .tickSize(0)
-      .tickPadding(10)
-
-    g.append('g')
-      .attr('class', 'y-axis')
-      .call(yAxis)
-      .selectAll('text')
-      .attr('fill', 'var(--terminal-green)')
-      .attr('font-family', 'JetBrains Mono, monospace')
-      .attr('font-size', '12px')
-
-    // Style y-axis
-    g.select('.y-axis')
-      .select('.domain')
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('opacity', 0.3)
-
-    // Add x-axis
-    const xAxis = d3.axisBottom(xScale)
-      .ticks(5)
-      .tickFormat(d => {
-        const value = d as number
-        if (selectedMetric === 'totalLosses') {
-          return `${(value / 1e9).toFixed(0)}B`
-        } else if (selectedMetric === 'averageSeverity') {
-          return value.toFixed(1)
-        } else {
-          return value.toString()
-        }
-      })
-
-    g.append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', `translate(0,${innerHeight})`)
-      .call(xAxis)
-      .selectAll('text')
-      .attr('fill', 'var(--terminal-green)')
-      .attr('font-family', 'JetBrains Mono, monospace')
-      .attr('font-size', '10px')
-
-    // Style x-axis
-    g.select('.x-axis')
-      .selectAll('line')
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('opacity', 0.3)
-
-    g.select('.x-axis')
-      .select('.domain')
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('opacity', 0.3)
-
-    // Add grid lines
-    g.selectAll('.grid-line')
-      .data(xScale.ticks(5))
-      .enter()
-      .append('line')
-      .attr('class', 'grid-line')
-      .attr('x1', d => xScale(d))
-      .attr('x2', d => xScale(d))
-      .attr('y1', 0)
-      .attr('y2', innerHeight)
-      .attr('stroke', 'var(--terminal-green)')
-      .attr('stroke-width', 0.5)
-      .attr('opacity', 0.1)
-
-    // Add title
-    svg.append('text')
-      .attr('x', width / 2)
-      .attr('y', 15)
-      .attr('text-anchor', 'middle')
-      .attr('fill', 'var(--terminal-green)')
-      .attr('font-family', 'JetBrains Mono, monospace')
-      .attr('font-size', '14px')
-      .attr('font-weight', 'bold')
-      .text(`Sector Analysis - ${selectedMetric === 'count' ? 'Case Count' : 
-             selectedMetric === 'totalLosses' ? 'Total Losses (IDR)' : 'Average Severity'}`)
-
-  }, [sectorStats, loading, selectedMetric, width, height])
-
-  if (loading) {
-    return (
-      <div className={`flex items-center justify-center ${className}`} style={{ width, height }}>
-        <div className="text-terminal-green font-mono text-sm animate-pulse">
-          Loading sector data...
-        </div>
-      </div>
-    )
+export default function BarChart({ data, title = 'Sector Analysis', loading = false, error }: BarChartProps) {
+  const chartData = {
+    labels: data.map(item => item.label),
+    datasets: [
+      {
+        label: 'Cases by Sector',
+        data: data.map(item => item.value),
+        backgroundColor: data.map(item => item.color || 'rgba(59, 130, 246, 0.8)'),
+        borderColor: data.map(item => item.color || 'rgba(59, 130, 246, 1)'),
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
+      },
+    ],
   }
 
-  if (error) {
-    return (
-      <div className={`flex items-center justify-center ${className}`} style={{ width, height }}>
-        <div className="text-terminal-red font-mono text-sm">
-          Error loading sector data: {error || 'Unknown error'}
-        </div>
-      </div>
-    )
+  const chartConfig = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: title,
+        color: '#60a5fa',
+        font: {
+            size: 16,
+            weight: 600,
+            family: 'Inter, system-ui, sans-serif',
+          },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleColor: '#e2e8f0',
+        bodyColor: '#cbd5e1',
+        borderColor: '#475569',
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: false,
+        callbacks: {
+          label: function(context: { parsed: { x: number } }): string {
+            const value = context.parsed.x
+            return `Cases: ${value}`
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(148, 163, 184, 0.2)',
+          lineWidth: 1,
+        },
+        ticks: {
+          color: '#94a3b8',
+          font: {
+            size: 11,
+            family: 'Inter, system-ui, sans-serif',
+          },
+          callback: function(tickValue: string | number): string {
+            const value = typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue
+            return value.toString()
+          }
+        },
+        border: {
+          color: '#475569',
+          width: 2,
+        },
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#94a3b8',
+          font: {
+            size: 11,
+            family: 'Inter, system-ui, sans-serif',
+          },
+          maxTicksLimit: 10,
+          callback: function(tickValue: string | number, index: number): string {
+            const value = typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue
+            const label = data[index]?.label || value.toString()
+            if (label.length > 25) {
+              return label.substring(0, 22) + '...'
+            }
+            return label
+          }
+        },
+        border: {
+          color: '#475569',
+          width: 2,
+        },
+      },
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart' as const,
+    },
   }
 
   return (
-    <div className={`relative ${className}`}>
-      {/* Metric selector */}
-      <div className="absolute top-2 right-2 z-10">
-        <select
-          value={selectedMetric}
-          onChange={(e) => setSelectedMetric(e.target.value as 'count' | 'totalLosses' | 'averageSeverity')}
-          className="bg-terminal-bg border border-terminal-green text-terminal-green font-mono text-xs px-2 py-1 rounded focus:outline-none focus:border-terminal-amber"
-        >
-          <option value="count">Case Count</option>
-          <option value="totalLosses">Total Losses</option>
-          <option value="averageSeverity">Avg Severity</option>
-        </select>
+    <div className="group relative overflow-hidden rounded-xl border border-slate-600/50 
+                    bg-gradient-to-br from-slate-800/90 via-slate-700/80 to-slate-800/90 
+                    backdrop-blur-xl shadow-xl shadow-blue-500/10 h-full
+                    hover:shadow-2xl hover:border-slate-500/70 transition-all duration-500">
+      {/* Animated shimmer effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent 
+                      translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1500" />
+      
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-slate-600/30">
+        <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 
+                       bg-clip-text text-transparent">
+          {title}
+        </h3>
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+          <span className="text-xs text-slate-400 font-medium">Live</span>
+        </div>
       </div>
       
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        className="bg-terminal-bg border border-terminal-green"
-      />
+      {/* Chart content */}
+      <div className="p-6 h-[calc(100%-80px)]">
+        {loading ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="text-blue-400">Loading sector data...</div>
+          </div>
+        ) : error ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="text-red-400">Error: {error}</div>
+          </div>
+        ) : !data.length ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="text-blue-400">No sector data available</div>
+          </div>
+        ) : (
+          <div className="h-full w-full relative">
+            {/* Chart background glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 
+                            rounded-lg opacity-50" />
+            
+            <Bar data={chartData} options={chartConfig} />
+            
+            {/* Corner accent */}
+            <div className="absolute top-0 right-0 w-8 h-8 rounded-bl-full 
+                            bg-gradient-to-bl from-blue-400/20 to-cyan-400/20" />
+          </div>
+        )}
+      </div>
+      
+      {/* Bottom glow line */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full 
+                      bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }

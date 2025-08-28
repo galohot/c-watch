@@ -168,12 +168,15 @@ export default function Treemap({
 
     treemap(root)
 
-    // Color scales
+    // Enhanced color scales with modern gradients
     const colorScale = d3.scaleSequential()
       .domain([0, d3.max(root.leaves(), d => d.data.averageSeverity || 0) || 10])
-      .interpolator(d3.interpolateRgb('#00ff00', '#ff4444'))
+      .interpolator(d3.interpolateRgb('#10b981', '#ef4444'))
 
-    const sectorColorScale = d3.scaleOrdinal(d3.schemeCategory10)
+    const sectorColorScale = d3.scaleOrdinal([
+      '#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b',
+      '#ef4444', '#ec4899', '#84cc16', '#f97316', '#6366f1'
+    ])
 
     // Create container group
     const container = svg.append('g')
@@ -210,7 +213,7 @@ export default function Treemap({
           }
         })
 
-      // Add rectangles
+      // Add rectangles with enhanced styling
       cell.append('rect')
         .attr('width', d => Math.max(0, d.x1! - d.x0!))
         .attr('height', d => Math.max(0, d.y1! - d.y0!))
@@ -220,58 +223,72 @@ export default function Treemap({
           } else if (d.data.sector) {
             return sectorColorScale(d.data.sector)
           } else {
-            return 'var(--terminal-green)'
+            return '#10b981'
           }
         })
-        .attr('stroke', 'var(--terminal-bg)')
-        .attr('stroke-width', 1)
-        .attr('opacity', 0.8)
+        .attr('stroke', '#1f2937')
+        .attr('stroke-width', 2)
+        .attr('opacity', 0.85)
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))')
         .on('mouseover', function() {
-          d3.select(this).attr('opacity', 1)
+          d3.select(this)
+            .attr('opacity', 1)
+            .attr('stroke-width', 3)
+            .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.4)) brightness(1.1)')
         })
         .on('mouseout', function() {
-          d3.select(this).attr('opacity', 0.8)
+          d3.select(this)
+            .attr('opacity', 0.85)
+            .attr('stroke-width', 2)
+            .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))')
         })
 
-      // Add text labels
+      // Add text labels with enhanced styling
       cell.append('text')
-        .attr('x', 4)
-        .attr('y', 16)
-        .attr('fill', 'var(--terminal-bg)')
-        .attr('font-family', 'JetBrains Mono, monospace')
+        .attr('x', 8)
+        .attr('y', 20)
+        .attr('fill', '#ffffff')
+        .attr('font-family', 'Inter, system-ui, sans-serif')
         .attr('font-size', d => {
           const area = (d.x1! - d.x0!) * (d.y1! - d.y0!)
-          return Math.min(12, Math.max(8, Math.sqrt(area) / 10)) + 'px'
+          return Math.min(14, Math.max(10, Math.sqrt(area) / 12)) + 'px'
         })
-        .attr('font-weight', 'bold')
+        .attr('font-weight', '600')
+        .style('text-shadow', '0 1px 2px rgba(0,0,0,0.8)')
         .text(d => {
           const width = d.x1! - d.x0!
-          const maxChars = Math.floor(width / 8)
+          const maxChars = Math.floor(width / 9)
           return d.data.name.length > maxChars ? 
             d.data.name.substring(0, maxChars - 3) + '...' : 
             d.data.name
         })
-        .filter(d => (d.x1! - d.x0!) > 50 && (d.y1! - d.y0!) > 20)
+        .filter(d => (d.x1! - d.x0!) > 60 && (d.y1! - d.y0!) > 25)
 
-      // Add value labels
+      // Add value labels with enhanced styling
       cell.append('text')
-        .attr('x', 4)
-        .attr('y', 32)
-        .attr('fill', 'var(--terminal-bg)')
-        .attr('font-family', 'JetBrains Mono, monospace')
-        .attr('font-size', '10px')
+        .attr('x', 8)
+        .attr('y', 38)
+        .attr('fill', '#e5e7eb')
+        .attr('font-family', 'Inter, system-ui, sans-serif')
+        .attr('font-size', '11px')
+        .attr('font-weight', '500')
+        .style('text-shadow', '0 1px 2px rgba(0,0,0,0.8)')
         .text(d => `Rp ${(d.value! / 1e9).toFixed(1)}B`)
-        .filter(d => (d.x1! - d.x0!) > 80 && (d.y1! - d.y0!) > 40)
+        .filter(d => (d.x1! - d.x0!) > 90 && (d.y1! - d.y0!) > 45)
 
-      // Add case count labels
+      // Add case count labels with enhanced styling
       cell.append('text')
-        .attr('x', 4)
-        .attr('y', 46)
-        .attr('fill', 'var(--terminal-bg)')
-        .attr('font-family', 'JetBrains Mono, monospace')
-        .attr('font-size', '9px')
+        .attr('x', 8)
+        .attr('y', 54)
+        .attr('fill', '#d1d5db')
+        .attr('font-family', 'Inter, system-ui, sans-serif')
+        .attr('font-size', '10px')
+        .attr('font-weight', '400')
+        .style('text-shadow', '0 1px 2px rgba(0,0,0,0.8)')
         .text(d => d.data.caseCount ? `${d.data.caseCount} cases` : '')
-        .filter(d => (d.x1! - d.x0!) > 100 && (d.y1! - d.y0!) > 60)
+        .filter(d => (d.x1! - d.x0!) > 110 && (d.y1! - d.y0!) > 65)
     }
 
     // Initial render
@@ -284,24 +301,31 @@ export default function Treemap({
       return (rect.x1 - rect.x0) * (rect.y1 - rect.y0) > 100
     }) as d3.HierarchyRectangularNode<TreemapNode>[])
 
-    // Add title
+    // Add title with enhanced styling
     svg.append('text')
       .attr('x', width / 2)
-      .attr('y', 20)
+      .attr('y', 25)
       .attr('text-anchor', 'middle')
-      .attr('fill', 'var(--terminal-green)')
-      .attr('font-family', 'JetBrains Mono, monospace')
-      .attr('font-size', '16px')
-      .attr('font-weight', 'bold')
+      .attr('fill', '#ffffff')
+      .attr('font-family', 'Inter, system-ui, sans-serif')
+      .attr('font-size', '18px')
+      .attr('font-weight', '700')
+      .style('text-shadow', '0 2px 4px rgba(0,0,0,0.8)')
       .text(currentRoot ? currentRoot.name : hierarchyData.name)
 
   }, [cases, loading, viewMode, currentRoot, width, height])
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center ${className}`} style={{ width, height }}>
-        <div className="text-terminal-green font-mono text-sm animate-pulse">
-          Loading treemap data...
+      <div className={`relative overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm ${className}`} style={{ width, height }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse" />
+        <div className="relative flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-slate-800/50 border border-slate-600/30">
+              <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-slate-300 font-medium">Loading treemap data...</span>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -309,25 +333,33 @@ export default function Treemap({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center ${className}`} style={{ width, height }}>
-        <div className="text-terminal-red font-mono text-sm">
-          Error loading treemap data: {error || 'Unknown error'}
+      <div className={`relative overflow-hidden rounded-xl border border-red-500/30 bg-gradient-to-br from-slate-900/90 via-red-900/20 to-slate-900/90 backdrop-blur-sm ${className}`} style={{ width, height }}>
+        <div className="relative flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-red-900/20 border border-red-500/30">
+              <div className="w-5 h-5 text-red-400">⚠</div>
+              <span className="text-red-300 font-medium">Error loading treemap data: {error || 'Unknown error'}</span>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm ${className}`}>
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 animate-pulse" />
+      
       {/* Controls */}
-      <div className="absolute top-2 left-2 z-10 flex gap-2">
+      <div className="absolute top-4 left-4 z-10 flex gap-3">
         <select
           value={viewMode}
           onChange={(e) => {
             setViewMode(e.target.value as ViewMode)
             setCurrentRoot(null)
           }}
-          className="bg-terminal-bg border border-terminal-green text-terminal-green font-mono text-xs px-2 py-1 rounded focus:outline-none focus:border-terminal-amber"
+          className="bg-slate-800/80 border border-slate-600/50 text-slate-200 font-medium text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 backdrop-blur-sm transition-all duration-200 hover:border-slate-500"
         >
           <option value="sector">By Sector</option>
           <option value="region">By Region</option>
@@ -337,35 +369,50 @@ export default function Treemap({
         {currentRoot && (
           <button
             onClick={() => setCurrentRoot(null)}
-            className="bg-terminal-bg border border-terminal-green text-terminal-green font-mono text-xs px-2 py-1 rounded hover:border-terminal-amber focus:outline-none"
+            className="bg-slate-800/80 border border-slate-600/50 text-slate-200 font-medium text-sm px-3 py-2 rounded-lg hover:border-slate-500 hover:bg-slate-700/80 focus:outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 backdrop-blur-sm transition-all duration-200 flex items-center gap-2"
           >
-            ← Back
+            <span>←</span> Back
           </button>
         )}
       </div>
 
       {/* Node details panel */}
       {selectedNode && (
-        <div className="absolute top-2 right-2 bg-terminal-bg border border-terminal-green p-3 rounded z-10 max-w-xs">
-          <div className="text-terminal-green font-mono text-xs">
-            <div className="font-bold mb-1">{selectedNode.name}</div>
-            <div>Total Losses: Rp {(selectedNode.value / 1e9).toFixed(2)}B</div>
+        <div className="absolute top-4 right-4 bg-slate-800/95 border border-slate-600/50 p-4 rounded-xl z-10 max-w-xs backdrop-blur-sm shadow-xl">
+          <div className="text-slate-200 text-sm space-y-2">
+            <div className="font-bold text-white text-base mb-3">{selectedNode.name}</div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Total Losses:</span>
+              <span className="font-semibold text-emerald-400">Rp {(selectedNode.value / 1e9).toFixed(2)}B</span>
+            </div>
             {selectedNode.caseCount && (
-              <div>Cases: {selectedNode.caseCount}</div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Cases:</span>
+                <span className="font-semibold text-blue-400">{selectedNode.caseCount}</span>
+              </div>
             )}
             {selectedNode.averageSeverity && (
-              <div>Avg Severity: {selectedNode.averageSeverity.toFixed(1)}</div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Avg Severity:</span>
+                <span className="font-semibold text-orange-400">{selectedNode.averageSeverity.toFixed(1)}</span>
+              </div>
             )}
             {selectedNode.sector && (
-              <div>Sector: {selectedNode.sector}</div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Sector:</span>
+                <span className="font-semibold text-purple-400">{selectedNode.sector}</span>
+              </div>
             )}
             {selectedNode.region && (
-              <div>Region: {selectedNode.region}</div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Region:</span>
+                <span className="font-semibold text-cyan-400">{selectedNode.region}</span>
+              </div>
             )}
           </div>
           <button
             onClick={() => setSelectedNode(null)}
-            className="mt-2 text-terminal-red hover:text-terminal-amber text-xs"
+            className="mt-3 w-full text-red-400 hover:text-red-300 text-sm font-medium py-1 px-2 rounded-lg hover:bg-red-500/10 transition-colors duration-200"
           >
             Close
           </button>
@@ -376,24 +423,27 @@ export default function Treemap({
         ref={svgRef}
         width={width}
         height={height}
-        className="bg-terminal-bg border border-terminal-green"
+        className="relative z-0"
+        style={{ background: 'transparent' }}
       />
       
       {/* Instructions */}
-      <div className="absolute bottom-2 left-2 text-terminal-green font-mono text-xs opacity-70">
+      <div className="absolute bottom-4 left-4 text-slate-400 text-sm opacity-80">
         Click to zoom • Scroll to pan • Hover for details
       </div>
       
       {/* Legend */}
-      <div className="absolute bottom-2 right-2 bg-terminal-bg border border-terminal-green p-2 rounded text-terminal-green font-mono text-xs">
-        <div className="font-bold mb-1">Color Scale:</div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-terminal-green"></div>
-          <span>Low Severity</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-terminal-red"></div>
-          <span>High Severity</span>
+      <div className="absolute bottom-4 right-4 bg-slate-800/80 border border-slate-600/50 p-3 rounded-lg text-slate-200 text-sm backdrop-blur-sm">
+        <div className="font-semibold mb-2 text-white">Color Scale:</div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+            <span>Low Severity</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+            <span>High Severity</span>
+          </div>
         </div>
       </div>
     </div>

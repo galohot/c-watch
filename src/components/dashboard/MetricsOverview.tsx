@@ -158,17 +158,38 @@ export function MetricsOverview({
   const metricsData = generateMetricsFromData(metrics)
 
   return (
-    <div className={cn('terminal-panel', className)}>
+    <div className={cn(
+      'terminal-panel group relative overflow-hidden',
+      'border border-terminal-amber/30 bg-terminal-dark/40 backdrop-blur-sm',
+      'shadow-terminal-amber-glow/20 transition-all duration-300',
+      'hover:border-terminal-amber/50 hover:shadow-terminal-amber-glow/30',
+      className
+    )}>
+      {/* Animated background effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-terminal-amber/5 via-transparent to-terminal-blue/5 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
       {title && (
-        <div className="mb-6">
-          <h2 className="text-lg font-bold text-orange-400 font-mono tracking-wider uppercase">
-            {title}
-          </h2>
-          <div className="mt-2 border-b border-orange-400/20"></div>
+        <div className="relative mb-6">
+          <div className="flex items-center justify-between">
+            <h2 className="terminal-text-lg font-mono font-bold text-terminal-amber tracking-wider uppercase 
+                           group-hover:glow-text transition-all duration-300">
+              {title}
+            </h2>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-terminal-green rounded-full animate-pulse" />
+              <span className="terminal-text-xs font-mono text-terminal-light/60 uppercase tracking-wide">
+                LIVE
+              </span>
+            </div>
+          </div>
+          <div className="mt-3 h-[1px] bg-gradient-to-r from-terminal-amber/50 via-terminal-amber/20 to-transparent" />
+          <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-terminal-amber 
+                          group-hover:w-full transition-all duration-700 ease-out" />
         </div>
       )}
       
-      <div className={cn('grid gap-4', gridCols[columns])}>
+      <div className={cn('grid gap-4 relative z-10', gridCols[columns])}>
         {metricsData.map((metric, index) => (
           <MetricCard
             key={index}
@@ -178,25 +199,47 @@ export function MetricsOverview({
             variant={metric.variant}
             subtitle={metric.subtitle}
             icon={metric.icon}
-            className="transition-all duration-200 hover:scale-105 hover:border-orange-400/40"
+            className="transform transition-all duration-300 hover:z-20"
           />
         ))}
       </div>
       
-      {/* Terminal-style footer */}
-      <div className="mt-6 pt-4 border-t border-orange-400/20">
-        <div className="flex items-center justify-between text-xs font-mono text-orange-400/50">
-          <div className="flex items-center space-x-4">
-            <span>METRICS: {metricsData.length} ACTIVE</span>
-            <span>UPDATE FREQ: 30s</span>
-            <span>DATA SOURCE: SUPABASE</span>
+      {/* Enhanced terminal footer */}
+      <div className="relative mt-6 pt-4">
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-terminal-amber/30 to-transparent mb-4" />
+        <div className="flex items-center justify-between terminal-text-xs font-mono text-terminal-light/50">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-green rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">METRICS: {metricsData.length} ACTIVE</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-blue rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">UPDATE FREQ: 30s</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-amber rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">DATA SOURCE: SUPABASE</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span>REAL-TIME</span>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <div className="w-2 h-2 bg-terminal-green rounded-full animate-pulse" />
+                <div className="absolute inset-0 w-2 h-2 bg-terminal-green rounded-full animate-ping opacity-30" />
+              </div>
+              <span className="uppercase tracking-wide text-terminal-green">REAL-TIME</span>
+            </div>
+            <div className="terminal-text-xs text-terminal-light/30">
+              {new Date().toLocaleTimeString()}
+            </div>
           </div>
         </div>
       </div>
+      
+      {/* Scan line effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-terminal-amber/5 to-transparent 
+                      h-[2px] animate-scan-line opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
   )
 }
@@ -270,15 +313,44 @@ export function CriticalMetrics({ className }: CriticalMetricsProps) {
   ]
 
   return (
-    <div className={cn('terminal-panel', className)}>
-      <div className="mb-6">
-        <h2 className="text-lg font-bold text-orange-400 font-mono tracking-wider uppercase">
-          Critical Alerts
-        </h2>
-        <div className="mt-2 border-b border-orange-400/20"></div>
+    <div className={cn(
+      'terminal-panel group relative overflow-hidden',
+      'border border-terminal-red/40 bg-terminal-dark/50 backdrop-blur-sm',
+      'shadow-terminal-red-glow/30 transition-all duration-300',
+      'hover:border-terminal-red/60 hover:shadow-terminal-red-glow/40',
+      className
+    )}>
+      {/* Critical alert background effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-terminal-red/10 via-transparent to-terminal-amber/5 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Pulsing border for critical alerts */}
+      <div className="absolute inset-0 border border-terminal-red/20 rounded-lg animate-pulse" />
+      
+      <div className="relative mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="w-3 h-3 bg-terminal-red rounded-full animate-pulse" />
+              <div className="absolute inset-0 w-3 h-3 bg-terminal-red rounded-full animate-ping opacity-40" />
+            </div>
+            <h2 className="terminal-text-lg font-mono font-bold text-terminal-red tracking-wider uppercase 
+                           group-hover:glow-text transition-all duration-300">
+              Critical Alerts
+            </h2>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="terminal-text-xs font-mono text-terminal-red/80 uppercase tracking-wide animate-pulse">
+              HIGH PRIORITY
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 h-[1px] bg-gradient-to-r from-terminal-red/60 via-terminal-red/30 to-transparent" />
+        <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-terminal-red 
+                        group-hover:w-full transition-all duration-700 ease-out" />
       </div>
       
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative z-10">
         {criticalMetrics.map((metric, index) => (
           <MetricCard
             key={index}
@@ -287,10 +359,38 @@ export function CriticalMetrics({ className }: CriticalMetricsProps) {
             change={metric.change}
             variant={metric.variant}
             subtitle={metric.subtitle}
-            className="transition-all duration-200 hover:scale-105 hover:border-orange-400/40"
+            className="transform transition-all duration-300 hover:z-20 hover:shadow-terminal-red-glow/20"
           />
         ))}
       </div>
+      
+      {/* Critical alert footer */}
+      <div className="relative mt-6 pt-4">
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-terminal-red/40 to-transparent mb-4" />
+        <div className="flex items-center justify-between terminal-text-xs font-mono text-terminal-light/50">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-red rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">ALERT LEVEL: CRITICAL</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-amber rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">AUTO-REFRESH: ON</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <div className="w-2 h-2 bg-terminal-red rounded-full animate-pulse" />
+              <div className="absolute inset-0 w-2 h-2 bg-terminal-red rounded-full animate-ping opacity-30" />
+            </div>
+            <span className="uppercase tracking-wide text-terminal-red">MONITORING</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Enhanced scan line for critical alerts */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-terminal-red/10 to-transparent 
+                      h-[3px] animate-scan-line opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
   )
 }
@@ -302,34 +402,111 @@ export function FinancialMetrics({ className }: { className?: string }) {
       value: '$1.2B',
       change: { value: '+15.3%', type: 'increase' as const },
       variant: 'critical' as const,
-      subtitle: 'YTD impact'
+      subtitle: 'YTD impact',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+        </svg>
+      )
     },
     {
       label: 'Recovered Funds',
       value: '$340.7M',
       change: { value: '+8.1%', type: 'increase' as const },
       variant: 'success' as const,
-      subtitle: 'This quarter'
+      subtitle: 'This quarter',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        </svg>
+      )
     },
     {
       label: 'Pending Recovery',
       value: '$277.4M',
       change: { value: '+31.2%', type: 'increase' as const },
       variant: 'warning' as const,
-      subtitle: 'Under investigation'
+      subtitle: 'Under investigation',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
     }
   ]
 
   return (
-    <div className={cn('space-y-4', className)}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-        Financial Impact Analysis
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className={cn(
+      'terminal-panel group relative overflow-hidden',
+      'border border-terminal-green/30 bg-terminal-dark/40 backdrop-blur-sm',
+      'shadow-terminal-green-glow/20 transition-all duration-300',
+      'hover:border-terminal-green/50 hover:shadow-terminal-green-glow/30',
+      className
+    )}>
+      {/* Financial background effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-terminal-green/5 via-transparent to-terminal-blue/5 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      <div className="relative mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="w-3 h-3 bg-terminal-green rounded-full animate-pulse" />
+              <div className="absolute inset-0 w-3 h-3 bg-terminal-green rounded-full animate-ping opacity-30" />
+            </div>
+            <h3 className="terminal-text-lg font-mono font-bold text-terminal-green tracking-wider uppercase 
+                           group-hover:glow-text transition-all duration-300">
+              Financial Impact Analysis
+            </h3>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="terminal-text-xs font-mono text-terminal-green/70 uppercase tracking-wide">
+              USD
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 h-[1px] bg-gradient-to-r from-terminal-green/50 via-terminal-green/20 to-transparent" />
+        <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-terminal-green 
+                        group-hover:w-full transition-all duration-700 ease-out" />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
         {financialMetrics.map((metric, index) => (
-          <MetricCard key={index} {...metric} />
+          <MetricCard 
+            key={index} 
+            {...metric}
+            className="transform transition-all duration-300 hover:z-20"
+          />
         ))}
       </div>
+      
+      {/* Financial footer */}
+      <div className="relative mt-6 pt-4">
+        <div className="h-[1px] bg-gradient-to-r from-transparent via-terminal-green/30 to-transparent mb-4" />
+        <div className="flex items-center justify-between terminal-text-xs font-mono text-terminal-light/50">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-green rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">CURRENCY: USD</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-terminal-blue rounded-full animate-pulse" />
+              <span className="uppercase tracking-wide">EXCHANGE RATE: LIVE</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <div className="w-2 h-2 bg-terminal-green rounded-full animate-pulse" />
+              <div className="absolute inset-0 w-2 h-2 bg-terminal-green rounded-full animate-ping opacity-30" />
+            </div>
+            <span className="uppercase tracking-wide text-terminal-green">TRACKING</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Scan line effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-terminal-green/5 to-transparent 
+                      h-[2px] animate-scan-line opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
   )
 }

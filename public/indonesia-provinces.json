@@ -1,0 +1,379 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Aceh",
+        "ID_1": "aceh"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[95.2, 5.8], [97.8, 5.8], [97.8, 3.2], [95.2, 3.2], [95.2, 5.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "North Sumatra",
+        "ID_1": "north_sumatra"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[98.0, 4.0], [100.0, 4.0], [100.0, 1.0], [98.0, 1.0], [98.0, 4.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Sumatra",
+        "ID_1": "west_sumatra"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[98.5, 1.0], [101.5, 1.0], [101.5, -2.0], [98.5, -2.0], [98.5, 1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Riau",
+        "ID_1": "riau"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[100.0, 2.5], [104.0, 2.5], [104.0, -1.0], [100.0, -1.0], [100.0, 2.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Jambi",
+        "ID_1": "jambi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[101.0, 0.0], [104.5, 0.0], [104.5, -2.5], [101.0, -2.5], [101.0, 0.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "South Sumatra",
+        "ID_1": "south_sumatra"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.0, -1.5], [106.0, -1.5], [106.0, -4.5], [102.0, -4.5], [102.0, -1.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Bengkulu",
+        "ID_1": "bengkulu"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[101.0, -2.0], [103.5, -2.0], [103.5, -5.5], [101.0, -5.5], [101.0, -2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Lampung",
+        "ID_1": "lampung"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[103.5, -4.0], [106.0, -4.0], [106.0, -6.5], [103.5, -6.5], [103.5, -4.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Bangka Belitung",
+        "ID_1": "bangka_belitung"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[105.0, -1.5], [108.5, -1.5], [108.5, -4.0], [105.0, -4.0], [105.0, -1.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Riau Islands",
+        "ID_1": "riau_islands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[103.0, 2.0], [108.5, 2.0], [108.5, -1.0], [103.0, -1.0], [103.0, 2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Jakarta",
+        "ID_1": "jakarta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[106.6, -5.9], [107.0, -5.9], [107.0, -6.4], [106.6, -6.4], [106.6, -5.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Java",
+        "ID_1": "west_java"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[105.0, -5.5], [108.5, -5.5], [108.5, -7.8], [105.0, -7.8], [105.0, -5.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Central Java",
+        "ID_1": "central_java"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[108.5, -6.0], [111.5, -6.0], [111.5, -8.5], [108.5, -8.5], [108.5, -6.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Yogyakarta",
+        "ID_1": "yogyakarta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[110.0, -7.5], [110.8, -7.5], [110.8, -8.2], [110.0, -8.2], [110.0, -7.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "East Java",
+        "ID_1": "east_java"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[111.0, -6.5], [114.5, -6.5], [114.5, -8.8], [111.0, -8.8], [111.0, -6.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Banten",
+        "ID_1": "banten"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[105.0, -5.5], [106.8, -5.5], [106.8, -7.0], [105.0, -7.0], [105.0, -5.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Bali",
+        "ID_1": "bali"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[114.4, -8.0], [115.8, -8.0], [115.8, -8.9], [114.4, -8.9], [114.4, -8.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Nusa Tenggara",
+        "ID_1": "west_nusa_tenggara"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[115.5, -8.0], [119.0, -8.0], [119.0, -9.5], [115.5, -9.5], [115.5, -8.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "East Nusa Tenggara",
+        "ID_1": "east_nusa_tenggara"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[118.5, -8.0], [125.0, -8.0], [125.0, -11.0], [118.5, -11.0], [118.5, -8.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Kalimantan",
+        "ID_1": "west_kalimantan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[108.0, 2.0], [112.0, 2.0], [112.0, -3.0], [108.0, -3.0], [108.0, 2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Central Kalimantan",
+        "ID_1": "central_kalimantan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[111.0, 0.5], [116.0, 0.5], [116.0, -4.0], [111.0, -4.0], [111.0, 0.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "South Kalimantan",
+        "ID_1": "south_kalimantan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[114.0, -1.0], [116.5, -1.0], [116.5, -4.5], [114.0, -4.5], [114.0, -1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "East Kalimantan",
+        "ID_1": "east_kalimantan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[113.5, 4.0], [119.0, 4.0], [119.0, -2.0], [113.5, -2.0], [113.5, 4.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "North Kalimantan",
+        "ID_1": "north_kalimantan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[115.0, 4.5], [119.5, 4.5], [119.5, 2.5], [115.0, 2.5], [115.0, 4.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "North Sulawesi",
+        "ID_1": "north_sulawesi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[123.0, 2.0], [127.0, 2.0], [127.0, 0.0], [123.0, 0.0], [123.0, 2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Central Sulawesi",
+        "ID_1": "central_sulawesi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[119.5, 1.0], [124.0, 1.0], [124.0, -3.5], [119.5, -3.5], [119.5, 1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "South Sulawesi",
+        "ID_1": "south_sulawesi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[118.0, -2.0], [122.0, -2.0], [122.0, -8.0], [118.0, -8.0], [118.0, -2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Southeast Sulawesi",
+        "ID_1": "southeast_sulawesi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[120.0, -3.0], [125.0, -3.0], [125.0, -6.5], [120.0, -6.5], [120.0, -3.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Gorontalo",
+        "ID_1": "gorontalo"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.0, 1.0], [124.0, 1.0], [124.0, 0.0], [121.0, 0.0], [121.0, 1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Sulawesi",
+        "ID_1": "west_sulawesi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[118.5, -1.0], [120.0, -1.0], [120.0, -3.5], [118.5, -3.5], [118.5, -1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Maluku",
+        "ID_1": "maluku"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[125.0, -2.0], [132.0, -2.0], [132.0, -9.0], [125.0, -9.0], [125.0, -2.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "North Maluku",
+        "ID_1": "north_maluku"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[126.0, 3.0], [130.0, 3.0], [130.0, -1.0], [126.0, -1.0], [126.0, 3.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "Papua",
+        "ID_1": "papua"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[130.0, -1.0], [141.0, -1.0], [141.0, -9.0], [130.0, -9.0], [130.0, -1.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME_1": "West Papua",
+        "ID_1": "west_papua"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[129.0, 1.0], [135.0, 1.0], [135.0, -4.0], [129.0, -4.0], [129.0, 1.0]]]
+      }
+    }
+  ]
+}

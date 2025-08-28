@@ -1,14 +1,16 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+
 import { DashboardHeader, MetricsOverview, CriticalMetrics } from '../components/dashboard'
-import { TerminalPanel, TickerTape, DataTable, LoadingSpinner } from '../components/ui'
+import { TickerTape, DataTable, LoadingSpinner } from '../components/ui'
 import { CorruptionChart, ChoroplethMap, BarChart, NetworkGraph, Treemap } from '../components/charts'
+
 import { useCorruptionCases } from '../hooks/useCorruptionCases'
 import { useMetrics } from '../hooks/useMetrics'
 import { useRealtimeUpdates } from '../hooks/useRealtimeUpdates'
 import { useRegionalStats } from '../hooks/useRegionalStats'
+import { useSectorStats } from '../hooks/useSectorStats'
 
 const tableColumns = [
   { key: 'id', header: 'Case ID', width: '120px' },
@@ -23,9 +25,10 @@ export default function Home() {
   const { metrics, loading: metricsLoading, lastUpdated } = useMetrics()
   const { lastUpdate, updateCount, isConnected } = useRealtimeUpdates()
   const { stats: regionalStats, loading: regionalLoading } = useRegionalStats()
+  const { stats: sectorStats, loading: sectorLoading } = useSectorStats()
   
   // State for geographic visualization
-  const [selectedProvinces, setSelectedProvinces] = useState<string[]>([])
+  const [selectedProvinces] = useState<string[]>([])
   const [showRegionalOverlay, setShowRegionalOverlay] = useState(false)
 
   // Process chart data from real corruption cases
@@ -123,17 +126,7 @@ export default function Home() {
     }
   }, [selectedProvinces, regionalStats])
 
-  // Process trend data from metrics
-  const trendData = useMemo(() => {
-    if (!metrics) return []
-    
-    return [
-      { period: 'Total Cases', value: metrics.totalCases, trend: 'up' as const, percentage: metrics.recentCasesGrowth },
-      { period: 'This Month', value: metrics.casesThisMonth, trend: metrics.recentCasesGrowth > 0 ? 'up' as const : 'down' as const, percentage: Math.abs(metrics.recentCasesGrowth) },
-      { period: 'Recovery Rate', value: Math.round(metrics.recoveryRate), trend: metrics.recoveryRate > 50 ? 'up' as const : 'down' as const, percentage: metrics.recoveryRate },
-      { period: 'Avg Severity', value: Math.round(metrics.averageSeverityScore * 10) / 10, trend: metrics.averageSeverityScore < 5 ? 'down' as const : 'up' as const, percentage: metrics.averageSeverityScore * 10 },
-    ]
-  }, [metrics])
+
 
   // Process table data from real cases
   const tableData = useMemo(() => {
@@ -155,7 +148,7 @@ export default function Home() {
     if (isConnected) {
       items.push({
         id: 'connection',
-        content: `SYSTEM: Real-time monitoring active - ${updateCount} updates received`,
+        content: `SYSTEM: Real-time monitoring active - ${updateCount || 0} updates received`,
         color: 'green' as const
       })
     } else {
@@ -170,7 +163,7 @@ export default function Home() {
       const updateType = lastUpdate.case_status?.toLowerCase().includes('new') ? 'NEW CASE' : 'UPDATE'
       items.push({
         id: 'latest',
-        content: `${updateType}: ${lastUpdate.title.slice(0, 80)}...`,
+        content: `${updateType}: ${lastUpdate.title?.slice(0, 80) || 'Untitled case'}...`,
         color: 'red' as const
       })
     }
@@ -230,14 +223,18 @@ export default function Home() {
             </div>
           )}
 
-          {/* Resizable Dashboard Panels */}
+          {/* Responsive Dashboard Grid */}
           {!casesLoading && !metricsLoading && !regionalLoading && (
-            <PanelGroup direction="vertical" className="min-h-[1000px]">
-              {/* Top Row - Charts */}
-              <Panel defaultSize={50} minSize={30}>
-                <PanelGroup direction="horizontal">
-                  <Panel defaultSize={50} minSize={30}>
-                    <TerminalPanel title="CORRUPTION TRENDS ANALYSIS" className="h-full">
+            <div className="dashboard-grid">
+              {/* Top Row - Primary Charts */}
+              <div className="dashboard-section dashboard-section-primary">
+                <div className="terminal-grid-2">
+                  <div className="terminal-panel h-full">
+                    <div className="terminal-panel-header">
+                      <h3 className="terminal-panel-title">CORRUPTION TRENDS ANALYSIS</h3>
+                      <div className="terminal-panel-indicator pulse-glow"></div>
+                    </div>
+                    <div className="terminal-panel-content">
                       <CorruptionChart
                         data={chartData}
                         type="area"
@@ -249,67 +246,57 @@ export default function Home() {
                         loading={casesLoading}
                         error={casesError || undefined}
                       />
-                    </TerminalPanel>
-                  </Panel>
+                    </div>
+                  </div>
                   
-                  <PanelResizeHandle className="panel-resize-handle" />
-                  
-                  <Panel defaultSize={50} minSize={30}>
-                    <TerminalPanel title="GEOGRAPHIC VISUALIZATION" className="h-full relative">
+                  <div className="terminal-panel h-full relative">
+                    <div className="terminal-panel-header">
+                      <h3 className="terminal-panel-title">GEOGRAPHIC VISUALIZATION</h3>
+                      <div className="terminal-panel-indicator pulse-glow"></div>
+                    </div>
+                    <div className="terminal-panel-content">
                       <ChoroplethMap
                         data={mapData}
-                        width={600}
-                        height={300}
-                        title="Corruption Intensity by Region"
-                        loading={regionalLoading}
                         interactive={true}
-                        multiSelect={true}
-                        selectedProvinces={selectedProvinces}
-                        onProvinceSelect={(provinces) => {
-                          const provinceIds = provinces.map(p => p.provinceId)
-                          setSelectedProvinces(provinceIds)
-                          setShowRegionalOverlay(provinceIds.length > 0)
-                        }}
-                        showLegend={true}
                         showTooltip={true}
                         valueFormat={(value) => (value * 10).toFixed(1)}
                       />
                       
                       {/* Regional Statistics Overlay */}
                       {showRegionalOverlay && overlayStats && (
-                        <div className="absolute top-4 right-4 bg-black/90 border border-orange-400/50 rounded p-4 max-w-xs z-10">
-                          <div className="flex justify-between items-center mb-3">
-                            <h4 className="font-bold text-orange-400 text-sm">Regional Statistics</h4>
+                        <div className="terminal-overlay">
+                          <div className="terminal-overlay-header">
+                            <h4 className="terminal-overlay-title">Regional Statistics</h4>
                             <button 
                               onClick={() => setShowRegionalOverlay(false)}
-                              className="text-orange-400/70 hover:text-orange-400 text-xs"
+                              className="terminal-button-close"
                             >
                               ✕
                             </button>
                           </div>
                           
-                          <div className="space-y-2 text-xs text-orange-400/80">
-                            <div className="border-b border-orange-400/30 pb-2">
-                              <p className="text-orange-400 font-semibold">
+                          <div className="terminal-overlay-content">
+                            <div className="terminal-overlay-section">
+                              <p className="text-terminal-amber font-semibold">
                                 {overlayStats.regions} Region{overlayStats.regions !== 1 ? 's' : ''} Selected
                               </p>
-                              <p className="text-xs text-orange-400/60">
+                              <p className="text-xs text-terminal-gray">
                                 {overlayStats.regionNames.join(', ')}
                               </p>
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
-                                <p className="text-orange-400">Total Cases</p>
-                                <p className="font-bold">{overlayStats.totalCases.toLocaleString()}</p>
+                            <div className="terminal-grid">
+                              <div className="terminal-stat">
+                                <p className="terminal-stat-label">Total Cases</p>
+                                <p className="terminal-stat-value">{overlayStats.totalCases.toLocaleString()}</p>
                               </div>
-                              <div>
-                                <p className="text-orange-400">Avg Severity</p>
-                                <p className="font-bold">{overlayStats.avgSeverity.toFixed(1)}/10</p>
+                              <div className="terminal-stat">
+                                <p className="terminal-stat-label">Avg Severity</p>
+                                <p className="terminal-stat-value">{overlayStats.avgSeverity.toFixed(1)}/10</p>
                               </div>
-                              <div>
-                                <p className="text-orange-400">Total Losses</p>
-                                <p className="font-bold">
+                              <div className="terminal-stat">
+                                <p className="terminal-stat-label">Total Losses</p>
+                                <p className="terminal-stat-value">
                                   {new Intl.NumberFormat('id-ID', { 
                                     style: 'currency', 
                                     currency: 'IDR', 
@@ -317,15 +304,15 @@ export default function Home() {
                                   }).format(overlayStats.totalLosses)}
                                 </p>
                               </div>
-                              <div>
-                                <p className="text-orange-400">Recovery Rate</p>
-                                <p className="font-bold">{overlayStats.recoveryRate.toFixed(1)}%</p>
+                              <div className="terminal-stat">
+                                <p className="terminal-stat-label">Recovery Rate</p>
+                                <p className="terminal-stat-value">{overlayStats.recoveryRate.toFixed(1)}%</p>
                               </div>
                             </div>
                             
-                            <div className="pt-2 border-t border-orange-400/30">
-                              <p className="text-orange-400">Recovered Assets</p>
-                              <p className="font-bold">
+                            <div className="terminal-overlay-section border-t border-terminal-border-color pt-3">
+                              <p className="terminal-stat-label">Recovered Assets</p>
+                              <p className="terminal-stat-value">
                                 {new Intl.NumberFormat('id-ID', { 
                                   style: 'currency', 
                                   currency: 'IDR', 
@@ -336,67 +323,78 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                    </TerminalPanel>
-                  </Panel>
-                </PanelGroup>
-              </Panel>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
-              <PanelResizeHandle className="panel-resize-handle" />
+              {/* Middle Row - Sector Analysis (Full Width) */}
+              <div className="dashboard-section dashboard-section-secondary">
+                <div className="terminal-panel h-full">
+                  <div className="terminal-panel-header">
+                    <h3 className="terminal-panel-title">SECTOR ANALYSIS</h3>
+                    <div className="terminal-panel-indicator glow-blue"></div>
+                  </div>
+                  <div className="terminal-panel-content">
+                    <BarChart
+                      data={sectorStats.map(stat => ({
+                        label: stat.sector,
+                        value: stat.caseCount,
+                        color: stat.averageSeverityScore > 7 ? '#ef4444' : stat.averageSeverityScore > 5 ? '#f97316' : '#10b981'
+                      }))}
+                      className="w-full h-full"
+                      loading={sectorLoading}
+                    />
+                  </div>
+                </div>
+              </div>
               
-              {/* Bottom Row - Sector Analysis and Network/Treemap */}
-              <Panel defaultSize={50} minSize={30}>
-                <PanelGroup direction="horizontal">
-                  <Panel defaultSize={33} minSize={25}>
-                    <TerminalPanel title="SECTOR ANALYSIS" className="h-full">
-                      <BarChart
-                        width={400}
-                        height={300}
-                        className="w-full h-full"
-                      />
-                    </TerminalPanel>
-                  </Panel>
-                  
-                  <PanelResizeHandle className="panel-resize-handle" />
-                  
-                  <Panel defaultSize={33} minSize={25}>
-                    <TerminalPanel title="INSTITUTION NETWORK" className="h-full">
+              {/* Institution Network Row */}
+              <div className="dashboard-section dashboard-section-secondary">
+                <div className="terminal-grid-2">
+                  <div className="terminal-panel h-full">
+                    <div className="terminal-panel-header">
+                      <h3 className="terminal-panel-title">INSTITUTION NETWORK</h3>
+                      <div className="terminal-panel-indicator glow-green"></div>
+                    </div>
+                    <div className="terminal-panel-content">
                       <NetworkGraph
                         width={400}
                         height={300}
                         className="w-full h-full"
                       />
-                    </TerminalPanel>
-                  </Panel>
+                    </div>
+                  </div>
                   
-                  <PanelResizeHandle className="panel-resize-handle" />
-                  
-                  <Panel defaultSize={34} minSize={25}>
-                    <TerminalPanel title="HIERARCHICAL ANALYSIS" className="h-full">
+                  <div className="terminal-panel h-full">
+                    <div className="terminal-panel-header">
+                      <h3 className="terminal-panel-title">HIERARCHICAL ANALYSIS</h3>
+                      <div className="terminal-panel-indicator glow-red"></div>
+                    </div>
+                    <div className="terminal-panel-content">
                       <Treemap
                         width={400}
                         height={300}
                         className="w-full h-full"
                       />
-                    </TerminalPanel>
-                  </Panel>
-                </PanelGroup>
-              </Panel>
-              
-              <PanelResizeHandle className="panel-resize-handle" />
-              
-              {/* Third Row - Critical Alerts and Live Case Feed */}
-              <Panel defaultSize={40} minSize={25}>
-                <PanelGroup direction="horizontal">
-                  <Panel defaultSize={40} minSize={25}>
-                    <div className="h-full">
-                      <CriticalMetrics />
                     </div>
-                  </Panel>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Bottom Row - Critical Alerts and Live Case Feed */}
+              <div className="dashboard-section dashboard-section-tertiary">
+                <div className="terminal-grid-2">
+                  <div className="terminal-panel h-full">
+                    <CriticalMetrics />
+                  </div>
                   
-                  <PanelResizeHandle className="panel-resize-handle" />
-                  
-                  <Panel defaultSize={60} minSize={35}>
-                    <TerminalPanel title={`RECENT CORRUPTION CASES (${cases.length} total)`} className="h-full">
+                  <div className="terminal-panel h-full">
+                    <div className="terminal-panel-header">
+                      <h3 className="terminal-panel-title">RECENT CORRUPTION CASES ({cases.length} total)</h3>
+                      <div className="terminal-panel-indicator animated-border"></div>
+                    </div>
+                    <div className="terminal-panel-content">
                       <DataTable
                         columns={tableColumns}
                         data={tableData}
@@ -456,67 +454,16 @@ export default function Home() {
                           )
                         }}
                       />
-                    </TerminalPanel>
-                  </Panel>
-                </PanelGroup>
-              </Panel>
-            </PanelGroup>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
 
 
-          {/* System Status Panel */}
-          <TerminalPanel title="SYSTEM STATUS & REAL-TIME MONITORING" variant="highlighted">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <h4 className="font-bold text-green-400">✓ Database Connection</h4>
-                <ul className="text-sm space-y-1 text-orange-400/70">
-                  <li>• Supabase: Connected</li>
-                  <li>• Total cases: {cases.length}</li>
-                  <li>• Last sync: {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : 'Never'}</li>
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <h4 className={`font-bold ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
-                  {isConnected ? '✓' : '✗'} Real-time Updates
-                </h4>
-                <ul className="text-sm space-y-1 text-orange-400/70">
-                  <li>• Status: {isConnected ? 'Active' : 'Disconnected'}</li>
-                  <li>• Updates received: {updateCount}</li>
-                  <li>• Last update: {lastUpdate ? new Date(lastUpdate.created_at).toLocaleTimeString() : 'None'}</li>
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-bold text-green-400">✓ Data Processing</h4>
-                <ul className="text-sm space-y-1 text-orange-400/70">
-                  {metrics && (
-                    <>
-                      <li>• Cases this month: {metrics.casesThisMonth}</li>
-                      <li>• Recovery rate: {metrics.recoveryRate.toFixed(1)}%</li>
-                      <li>• Avg severity: {metrics.averageSeverityScore.toFixed(1)}/10</li>
-                    </>
-                  )}
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-bold text-green-400">✓ Chart Data</h4>
-                <ul className="text-sm space-y-1 text-orange-400/70">
-                  <li>• Timeline points: {chartData.length}</li>
-                  <li>• Trend metrics: {trendData.length}</li>
-                  <li>• Table rows: {tableData.length}</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="mt-6 pt-4 border-t border-orange-400/20">
-              <p className="text-center text-orange-400 font-bold">
-                🎉 REAL-TIME CORRUPTION MONITORING SYSTEM ACTIVE
-              </p>
-              <p className="text-center text-orange-400/70 text-sm mt-2">
-                Live data from Supabase • Real-time updates • Interactive dashboard
-              </p>
-            </div>
-          </TerminalPanel>
+
 
           {/* System Footer */}
           <div className="border-t border-orange-400/30 pt-4 text-xs text-orange-400/50 font-mono">

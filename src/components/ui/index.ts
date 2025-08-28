@@ -10,10 +10,10 @@ export { StatusIndicator, OnlineStatus, OfflineStatus, SystemStatus } from './St
 export { TerminalButton, RefreshButton, FilterButton, ExportButton } from './TerminalButton'
 
 // Type exports for DataTable
-export interface Column {
+export interface Column<T = unknown> {
   key: string
   header: string
   width?: string
   align?: 'left' | 'center' | 'right'
-  render?: (value: any, row: any) => React.ReactNode
+  render?: (value: unknown, row: T) => React.ReactNode
 }
